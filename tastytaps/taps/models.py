@@ -14,6 +14,9 @@ class Taps(models.Model):
     price = models.ForeignKey('Price', related_name='prices')
     # TODO: image - for pictures or bottle labels (icon, larger image)
 
+    def __unicode__(self):
+        return self.name
+
 
 class Brewery(models.Model):
     name = models.CharField(max_length=100)
@@ -22,8 +25,14 @@ class Brewery(models.Model):
     country = models.CharField(max_length=100, blank=True)
     # TODO: Image for logo?
 
+    def __unicode__(self):
+        return self.name
+
 
 class Price(models.Model):
     size = models.CharField(max_length=25)
     price = models.DecimalField(max_digits=5, decimal_places=2)
     # TODO: Add image for glassware for display.
+
+    def __unicode__(self):
+        return self.size
