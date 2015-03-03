@@ -5,5 +5,5 @@ from .views import HomePageView
 
 urlpatterns = [
     url(r'^$', HomePageView.as_view(), name='home'),
-    url(r'api/', include('tastytaps.taps.urls')),
+    url(r'api/v1/', include('tastytaps.taps.urls')),
 ]
