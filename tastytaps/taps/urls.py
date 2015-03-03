@@ -1,22 +1,12 @@
-from django.conf.urls import include, url
-from rest_framework.urlpatterns import format_suffix_patterns
+from rest_framework import routers
 
 from . import api
 
 
-brewery_urls = [
-    url(r'^/?$', api.BreweryListCreate.as_view())
-]
+router = routers.SimpleRouter()
 
-taps_urls = [
-    url(r'^/create/?$', api.TapsCreate.as_view(), name='taps.create'),
-    url(r'^/(?P<pk>\d+)/?$', api.TapsDetail.as_view(), name='taps.detail'),
-    url(r'^/?$', api.TapsList.as_view(), name='taps.list'),
-]
+router.register(r'brewery', api.BreweryViewSet)
+router.register(r'price', api.PriceViewSet)
+router.register(r'taps', api.TapsViewSet)
 
-urlpatterns = [
-    url(r'^brewery', include(brewery_urls)),
-    url(r'^taps', include(taps_urls)),
-]
-
-urlpatterns = format_suffix_patterns(urlpatterns)
+urlpatterns = router.urls

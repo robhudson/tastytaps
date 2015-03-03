@@ -1,30 +1,30 @@
-from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
-from .models import Brewery, Taps
-from .serializers import BrewerySerializer, TapsListSerializer, TapsSerializer
+from .models import Brewery, Price, Taps
+from .serializers import (BrewerySerializer, PriceSerializer, TapsSerializer,
+                          TapsListSerializer)
+
+from rest_framework.viewsets import ModelViewSet
 
 
-class BreweryListCreate(generics.ListCreateAPIView):
+class BreweryViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Brewery.objects.all()
     serializer_class = BrewerySerializer
 
 
-class TapsMixin(object):
+class PriceViewSet(ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = Price.objects.all()
+    serializer_class = PriceSerializer
+
+
+class TapsViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Taps.objects.all()
 
-
-class TapsCreate(TapsMixin, generics.CreateAPIView):
-    serializer_class = TapsSerializer
-
-
-class TapsDetail(TapsMixin, generics.RetrieveAPIView):
-    """Returns a specific tap"""
-    serializer_class = TapsListSerializer
-
-
-class TapsList(TapsMixin, generics.ListAPIView):
-    """Returns a list of all of the taps"""
-    serializer_class = TapsListSerializer
+    def get_serializer_class(self):
+        """Returns the right serializer class based on action"""
+        if self.action == 'create':
+            return TapsSerializer
+        return TapsListSerializer
