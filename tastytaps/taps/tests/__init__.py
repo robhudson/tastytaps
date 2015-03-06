@@ -1,1 +1,1 @@
-from .test_serializer import *  # noqa
+from tastytaps.taps.tests.test_serializer import *  # noqa
