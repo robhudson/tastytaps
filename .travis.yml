@@ -7,4 +7,4 @@ install:
 before_script:
   - flake8 . --exclude=".git,templates,migrations"
 script:
-  - ./manage.py test -v2 --noinput
+  - py.test -v --ds=tastytaps.settings_test
