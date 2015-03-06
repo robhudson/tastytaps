@@ -16,4 +16,6 @@ pep8==1.5.7
 pyflakes==0.8.1
 
 # Tests
+py==1.4.26
+pytest==2.6.4
 pytest-django==2.8.0
