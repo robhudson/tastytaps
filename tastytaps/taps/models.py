@@ -5,7 +5,6 @@ class Taps(models.Model):
     name = models.CharField(max_length=200)
     summary = models.TextField()
     description = models.TextField(blank=True)
-    brewery = models.ForeignKey('Brewery', related_name='brewery')
     style = models.CharField(max_length=100)
     abv = models.DecimalField(max_digits=4, decimal_places=2, blank=True,
                               null=True)
@@ -13,16 +12,11 @@ class Taps(models.Model):
     srm = models.PositiveSmallIntegerField(blank=True, null=True)
     price = models.ForeignKey('Price', related_name='prices')
     # TODO: image - for pictures or bottle labels (icon, larger image)
-
-    def __unicode__(self):
-        return self.name
-
-
-class Brewery(models.Model):
-    name = models.CharField(max_length=100)
-    city = models.CharField(max_length=100, blank=True)
-    state = models.CharField(max_length=50, blank=True)
-    country = models.CharField(max_length=100, blank=True)
+    # Brewery info
+    brewery_name = models.CharField(max_length=100)
+    brewery_city = models.CharField(max_length=100, blank=True)
+    brewery_state = models.CharField(max_length=50, blank=True)
+    brewery_country = models.CharField(max_length=100, blank=True)
     # TODO: Image for logo?
 
     def __unicode__(self):

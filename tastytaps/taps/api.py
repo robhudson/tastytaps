@@ -1,16 +1,9 @@
 from rest_framework.permissions import IsAuthenticated
 
-from .models import Brewery, Price, Taps
-from .serializers import (BrewerySerializer, PriceSerializer, TapsSerializer,
-                          TapsListSerializer)
+from .models import Price, Taps
+from .serializers import (PriceSerializer, TapsSerializer, TapsListSerializer)
 
 from rest_framework.viewsets import ModelViewSet
-
-
-class BreweryViewSet(ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    queryset = Brewery.objects.all()
-    serializer_class = BrewerySerializer
 
 
 class PriceViewSet(ModelViewSet):

@@ -1,11 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 
-from .models import Brewery, Price, Taps
-
-
-class BrewerySerializer(ModelSerializer):
-    class Meta:
-        model = Brewery
+from .models import Price, Taps
 
 
 class PriceSerializer(ModelSerializer):
@@ -19,5 +14,4 @@ class TapsSerializer(ModelSerializer):
 
 
 class TapsListSerializer(TapsSerializer):
-    brewery = BrewerySerializer()
     price = PriceSerializer()

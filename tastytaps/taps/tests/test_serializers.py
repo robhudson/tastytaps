@@ -1,8 +1,7 @@
 from django.test import TestCase
 
-from tastytaps.taps.models import Brewery, Price
-from tastytaps.taps.serializers import (BrewerySerializer, PriceSerializer,
-                                        TapsSerializer)
+from tastytaps.taps.models import Price
+from tastytaps.taps.serializers import PriceSerializer, TapsSerializer
 
 
 class TestBaseSerializer(TestCase):
@@ -15,20 +14,6 @@ class TestBaseSerializer(TestCase):
 
     def error_serialize(self):
         self.assertFalse(self.serializer(data=self.data).is_valid())
-
-
-class TestBrewerySerializer(TestBaseSerializer):
-    def setUp(self):
-        super(TestBrewerySerializer, self).setUp()
-        self.serializer = BrewerySerializer
-        self.data = {'name': 'Oakshire Brewing', 'city': 'Eugene'}
-
-    def test_success_serialize(self):
-        return self.success_serialize()
-
-    def test_error_serialize(self):
-        del self.data['name']
-        return self.error_serialize()
 
 
 class TestPriceSerializer(TestBaseSerializer):
@@ -49,15 +34,14 @@ class TestTapsSerializer(TestBaseSerializer):
     def setUp(self):
         super(TestTapsSerializer, self).setUp()
         self.serializer = TapsSerializer
-        brewery = Brewery.objects.create(name='Ninkasi', city='Eugene')
         price = Price.objects.create(size='Glass', price=4.99)
 
         self.data = {
             'name': 'Tastybrew tap list',
             'summary': 'Taps summary',
-            'brewery': brewery.pk,
             'style': 'Flanders red ale',
-            'price': price.pk
+            'price': price.pk,
+            'brewery_name': 'Oakshire'
         }
 
     def test_success_serialize(self):
