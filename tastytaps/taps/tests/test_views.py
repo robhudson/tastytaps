@@ -1,4 +1,3 @@
-from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
 from rest_framework.test import APIClient, APITestCase
@@ -20,13 +19,11 @@ class TestTapsViewSet(APITestCase):
     # TODO: test update tap (change price)
 
     def test_unauthenticated(self):
-        url = reverse('taps-list')
         self.client.force_authenticate(user=None)
-        resp = self.client.get(url)
+        resp = self.client.get('/api/v1/taps/')
         self.assertEqual(resp.status_code, 403)
 
     def test_create(self):
-        url = reverse('taps-list')
         data = {
             'name': 'Duchesse de Bourgogne',
             'style': 'Flanders Red Ale',
@@ -38,7 +35,7 @@ class TestTapsViewSet(APITestCase):
                 {'size': 'Pint', 'price': 5.00},
             ],
         }
-        resp = self.client.post(url, data)
+        resp = self.client.post('/api/v1/taps/', data)
         self.assertEqual(resp.status_code, 201)
         # TODO: assert response content
         # TODO: assert resource URL
