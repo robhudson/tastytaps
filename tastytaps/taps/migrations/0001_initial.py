@@ -6,8 +6,6 @@ from django.db import models, migrations
 
 class Migration(migrations.Migration):
 
-    replaces = [(b'taps', '0001_initial'), (b'taps', '0002_auto_20150408_0238')]
-
     dependencies = [
     ]
 
@@ -31,11 +29,15 @@ class Migration(migrations.Migration):
                 ('abv', models.DecimalField(null=True, max_digits=4, decimal_places=2, blank=True)),
                 ('ibu', models.PositiveSmallIntegerField(null=True, blank=True)),
                 ('srm', models.PositiveSmallIntegerField(null=True, blank=True)),
-                ('price', models.ForeignKey(related_name='prices', to='taps.Price')),
+                ('brewery_name', models.CharField(max_length=100)),
                 ('brewery_city', models.CharField(max_length=100, blank=True)),
-                ('brewery_country', models.CharField(max_length=100, blank=True)),
-                ('brewery_name', models.CharField(default='', max_length=100)),
                 ('brewery_state', models.CharField(max_length=50, blank=True)),
+                ('brewery_country', models.CharField(max_length=100, blank=True)),
             ],
+        ),
+        migrations.AddField(
+            model_name='price',
+            name='tap',
+            field=models.ForeignKey(related_name='prices', to='taps.Taps'),
         ),
     ]

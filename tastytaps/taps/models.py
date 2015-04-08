@@ -10,7 +10,6 @@ class Taps(models.Model):
                               null=True)
     ibu = models.PositiveSmallIntegerField(blank=True, null=True)
     srm = models.PositiveSmallIntegerField(blank=True, null=True)
-    price = models.ForeignKey('Price', related_name='prices')
     # TODO: image - for pictures or bottle labels (icon, larger image)
     # Brewery info
     brewery_name = models.CharField(max_length=100)
@@ -24,6 +23,7 @@ class Taps(models.Model):
 
 
 class Price(models.Model):
+    tap = models.ForeignKey(Taps, related_name='prices')
     size = models.CharField(max_length=25)
     price = models.DecimalField(max_digits=5, decimal_places=2)
     # TODO: Add image for glassware for display.
