@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 
 from rest_framework.test import APIClient, APITestCase
 
+from tastytaps.taps.models import Price, Taps
+
 
 class TestTapsViewSet(APITestCase):
 
@@ -14,17 +16,7 @@ class TestTapsViewSet(APITestCase):
         self.user = User.objects.create(**credentials)
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
-
-    # TODO: test delete tap
-    # TODO: test update tap (change price)
-
-    def test_unauthenticated(self):
-        self.client.force_authenticate(user=None)
-        resp = self.client.get('/api/v1/taps/')
-        self.assertEqual(resp.status_code, 403)
-
-    def test_create(self):
-        data = {
+        self.data = {
             'name': 'Duchesse de Bourgogne',
             'style': 'Flanders Red Ale',
             'summary': 'A wonderful Flanders Red Ale',
@@ -35,7 +27,29 @@ class TestTapsViewSet(APITestCase):
                 {'size': 'Pint', 'price': 5.00},
             ],
         }
-        resp = self.client.post('/api/v1/taps/', data)
+
+    # TODO: test delete tap
+    # TODO: test update tap (change price)
+
+    def test_unauthenticated(self):
+        self.client.force_authenticate(user=None)
+        resp = self.client.get('/api/v1/taps/')
+        self.assertEqual(resp.status_code, 403)
+
+    def test_get(self):
+        prices = self.data.pop('prices')
+        tap = Taps.objects.create(**self.data)
+        for price in prices:
+            Price.objects.create(tap=tap, **price)
+
+        resp = self.client.get('/api/v1/taps/%s/' % tap.id)
+        for key in self.data.keys():
+            self.assertEqual(resp.data[key], self.data[key],
+                             'Unexpected value for key:%s: %s' % (
+                                 key, resp.data[key]))
+
+    def test_create(self):
+        resp = self.client.post('/api/v1/taps/', self.data)
         self.assertEqual(resp.status_code, 201)
         # TODO: assert response content
         # TODO: assert resource URL
