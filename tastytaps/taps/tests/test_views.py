@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.models import User
 
 from rest_framework.test import APIClient, APITestCase
@@ -23,8 +25,8 @@ class TestTapsViewSet(APITestCase):
             'brewery_name': 'Brouwerij Verhaeghe',
             'brewery_country': 'Belgium',
             'prices': [
-                {'size': 'Glass', 'price': 3.50},
-                {'size': 'Pint', 'price': 5.00},
+                {'size': 'Glass', 'price': '3.50'},
+                {'size': 'Pint', 'price': '5.00'},
             ],
         }
 
@@ -49,7 +51,14 @@ class TestTapsViewSet(APITestCase):
                                  key, resp.data[key]))
 
     def test_create(self):
-        resp = self.client.post('/api/v1/taps/', self.data)
+        resp = self.client.post('/api/v1/taps/', self.data, format='json')
         self.assertEqual(resp.status_code, 201)
-        # TODO: assert response content
+
+        # Using json here b/c `resp.data` nested structure gets converted to an
+        # `OrderedDict` and doesn't match.
+        data = json.loads(resp.content)
+        for key in self.data.keys():
+            self.assertEqual(data[key], self.data[key],
+                             'Unexpected value for key:%s: %s' % (
+                                 key, data[key]))
         # TODO: assert resource URL
