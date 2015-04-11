@@ -31,7 +31,14 @@ class TestTapsViewSet(APITestCase):
         }
 
     # TODO: test delete tap
-    # TODO: test update tap (change price)
+
+    def _make_tap(self):
+        data = self.data.copy()
+        prices = data.pop('prices')
+        tap = Taps.objects.create(**data)
+        for price in prices:
+            Price.objects.create(tap=tap, **price)
+        return tap
 
     def test_unauthenticated(self):
         self.client.force_authenticate(user=None)
@@ -39,11 +46,7 @@ class TestTapsViewSet(APITestCase):
         self.assertEqual(resp.status_code, 403)
 
     def test_get(self):
-        prices = self.data.pop('prices')
-        tap = Taps.objects.create(**self.data)
-        for price in prices:
-            Price.objects.create(tap=tap, **price)
-
+        tap = self._make_tap()
         resp = self.client.get('/api/v1/taps/%s/' % tap.id)
         for key in self.data.keys():
             self.assertEqual(resp.data[key], self.data[key],
@@ -61,4 +64,22 @@ class TestTapsViewSet(APITestCase):
             self.assertEqual(data[key], self.data[key],
                              'Unexpected value for key:%s: %s' % (
                                  key, data[key]))
-        # TODO: assert resource URL
+
+    def test_update(self):
+        tap = self._make_tap()
+        new_data = self.data.copy()
+        # Update summary, remove Pint option, and increase glass price.
+        new_data.update({
+            'summary': 'An awesome Flanders Red Ale',
+            'prices': [
+                {'size': 'Glass', 'price': '4.00'},
+            ],
+        })
+        resp = self.client.put('/api/v1/taps/%s/' % tap.id, new_data,
+                               format='json')
+        data = json.loads(resp.content)
+        for key in new_data.keys():
+            self.assertEqual(data[key], new_data[key],
+                             'Unexpected value for key:%s: %s' % (
+                                 key, new_data[key]))
+        self.assertEqual(tap.prices.count(), 1)
