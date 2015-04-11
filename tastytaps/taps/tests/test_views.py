@@ -30,8 +30,6 @@ class TestTapsViewSet(APITestCase):
             ],
         }
 
-    # TODO: test delete tap
-
     def _make_tap(self):
         data = self.data.copy()
         prices = data.pop('prices')
@@ -48,6 +46,7 @@ class TestTapsViewSet(APITestCase):
     def test_get(self):
         tap = self._make_tap()
         resp = self.client.get('/api/v1/taps/%s/' % tap.id)
+        self.assertEqual(resp.status_code, 200)
         for key in self.data.keys():
             self.assertEqual(resp.data[key], self.data[key],
                              'Unexpected value for key:%s: %s' % (
@@ -77,9 +76,18 @@ class TestTapsViewSet(APITestCase):
         })
         resp = self.client.put('/api/v1/taps/%s/' % tap.id, new_data,
                                format='json')
+        self.assertEqual(resp.status_code, 200)
         data = json.loads(resp.content)
         for key in new_data.keys():
             self.assertEqual(data[key], new_data[key],
                              'Unexpected value for key:%s: %s' % (
                                  key, new_data[key]))
         self.assertEqual(tap.prices.count(), 1)
+
+    def test_delete(self):
+        tap = self._make_tap()
+        resp = self.client.delete('/api/v1/taps/%s/' % tap.id)
+        self.assertEqual(resp.status_code, 204)
+        with self.assertRaises(Taps.DoesNotExist):
+            Taps.objects.get(id=tap.id)
+        self.assertEqual(Price.objects.count(), 0)
