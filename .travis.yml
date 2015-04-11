@@ -5,6 +5,6 @@ python:
 install:
   - pip install --no-deps -r requirements.txt
 before_script:
-  - flake8 . --exclude=".git,templates,migrations"
+  - flake8 .
 script:
   - py.test -v --ds=tastytaps.settings
